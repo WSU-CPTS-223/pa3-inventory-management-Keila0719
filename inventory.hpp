@@ -1,8 +1,20 @@
+#pragma once
+#include "hashTable.hpp"
+#include "product.hpp"
+
+#include <iostream>
+#include <fstream>
+#include <sstream>
+#include <string>
+
+using namespace std;
+using std::string;
+using std::getline;
+
 class Inventory{
 public:
-    
-
-private:
-    
-    
+    string parseCSVFiles(string line);
+    void parse(ifstream& file, HashTable<string, Product> table);
+    void find(string uniqID);
+    void listInventory(string category);
 };

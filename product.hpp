@@ -1,3 +1,4 @@
+#progma once
 #include <string>
 #include <vector>
 

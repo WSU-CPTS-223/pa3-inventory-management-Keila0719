@@ -2,12 +2,20 @@
 
 // Constructor
 template<typename Key, typename Value>
-HashTable<Key, Value>::HashTable(int newCapacity): table(newCapacity,nullptr), currentSize(0), capacity(newCapacity){} 
+HashTable<Key, Value>::HashTable(int newCapacity): currentSize(0), capacity(newCapacity){
+    table = new HashNode<Key, Value>*[newCapacity];
+    for (int i = 0; i < newCapacity; ++i) {
+        table[i] = nullptr;
+    }
+} 
  
 // Destructor : clear all the node inside the table
 template<typename Key, typename Value>
 HashTable<Key, Value>::~HashTable(){
+    // delete all nodes in the table
     clear();
+    // delete the table
+    delete[] table;
 }
 
 /* hash Function:
@@ -106,7 +114,7 @@ bool HashTable<Key, Value>::remove(const Key& key){
                 previous->next = current->next;
             }
             // delete the current
-            delete(current);
+            delete current;
             // Since we removed a node, decrease the currentsize by 1
             currentSize--;
             // After removing, return true to show it was successful
@@ -168,7 +176,7 @@ void HashTable<Key, Value>::clear(){
             // Use the temp variable to save the information after the current node
             HashNode<Key, Value>* temp = current;
             // Delete the current node
-            delete (current);
+            delete current;
             // After deleting the current node, go to the next node
             current = temp->next;
         }
@@ -187,7 +195,7 @@ template <typename Key, typename Value>
 void HashTable<Key, Value>::rehash(){
     // Get the current capacity and table
     int currentCap = capacity;
-    vector<HashNode<Key, Value>*> currentTable = table; 
+    HashNode<Key, Value>** currentTable = table; 
 
     // Create a new capacity which is a prime number and at least currentCap*2
     // First get the double the currentCap
@@ -215,11 +223,17 @@ void HashTable<Key, Value>::rehash(){
         }
     }
     // Once we found the new prime capacity that is double the previous one, rehash the table
-    // Clear the current table
-    table.clear();
     // Create a new table with new capacity
-    table.resize(newCap, nullptr);
+    table = new HashNode<Key, Value>* [newCap];
 
+    // insert nullptr for all elements
+    for (int i = 0; i < newCap; ++i) {
+        table[i] = nullptr;
+    }
+    // update the capacity as the new capacity
+    capacity = newCap;
+    // Re-set the currentSize since it will increase as we insert from old table to new table
+    currentSize = 0;
     // Insert each node in the old table into the new table
     int index = 0;
     // loop until it reches the end of the table
@@ -239,8 +253,8 @@ void HashTable<Key, Value>::rehash(){
         // After the insertion of that index's table is done, increase the index to go to the next table
         index++;   
     }
-    // After finished with inserting all the nodes, we will clear the old data
-    currentTable.clear();
+    // Clear the current table
+    delete[] currentTable;
 }
 
 // Getter for currentSize variable : return the currentSize

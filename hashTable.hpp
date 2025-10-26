@@ -1,9 +1,7 @@
 #pragma once
 #include "hashNode.hpp"
 #include <iostream>
-#include <vector>
 
-using std::vector;
 
 template<typename Key, typename Value>
 class HashTable{
@@ -25,7 +23,7 @@ public:
     double getLoadFactor();
 
 private:
-    vector<HashNode<Key, Value>*> table;
+    HashNode<Key, Value>** table;
     int currentSize;
     int capacity;
     double loadFactor = 0.5; 
