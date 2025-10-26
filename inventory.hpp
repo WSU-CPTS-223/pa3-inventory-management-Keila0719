@@ -13,8 +13,8 @@ using std::getline;
 
 class Inventory{
 public:
-    string parseCSVFiles(string line);
-    void parse(ifstream& file, HashTable<string, Product> table);
+    vector<string> parseCSVFiles(string line);
+    void parse(ifstream& file, HashTable<string, Product>& table);
     void find(string uniqID);
     void listInventory(string category);
 };

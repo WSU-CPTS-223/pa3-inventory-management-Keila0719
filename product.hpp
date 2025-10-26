@@ -1,11 +1,11 @@
-#progma once
+#pragma once
 #include <string>
 #include <vector>
 
 using std::string;
 
 class Product{
-private:
+public:
     string uniqId;
     string productName;
     string brandName;
@@ -34,8 +34,7 @@ private:
     string isAmazonSeller;
     string sizeQuantityVariant;
     string productDescription;
-
-public:
+    
     Product() = default;
     Product(string newUniqId, string newProductName, string newBrandName, string newAsin, string newCategory, string newUpcEanCode,
             string newListPrice, string newSellingPrice, string newQuantity, string newModelNumber, string newAboutProduct, string newProductSpecification,
