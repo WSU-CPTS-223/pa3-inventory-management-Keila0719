@@ -1,6 +1,10 @@
 #pragma once
 #include "hashNode.hpp"
 #include <iostream>
+#include <string>
+#include <vector>
+using std::vector;
+using std::string;
 
 
 template<typename Key, typename Value>
@@ -17,6 +21,7 @@ public:
     Value* find(const Key& key);
     void clear();
     void rehash();
+    vector<Value> findCategory(const string& category);
 
     int getCurrentSize();
     int getCapacity();

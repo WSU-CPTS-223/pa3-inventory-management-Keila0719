@@ -14,7 +14,8 @@ using std::getline;
 class Inventory{
 public:
     vector<string> parseCSVFiles(string line);
-    void parse(ifstream& file, HashTable<string, Product>& table);
+    void parse(ifstream& file, HashTable<string, Product>& table, HashTable<string, Product>& categoryTable);
     void find(string inventoryID, HashTable<string, Product>& table);
-    void listInventory(string category, HashTable<string, Product>& table);
+    void listInventory(string category, HashTable<string, Product>& categoryTable);
+    vector<string> seprateCategories(string line);
 };

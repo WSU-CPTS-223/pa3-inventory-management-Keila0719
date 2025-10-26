@@ -1,6 +1,6 @@
 #include "inventory.hpp"
 
-void Inventory::parse(ifstream &file, HashTable<string, Product>& table){
+void Inventory::parse(ifstream &file, HashTable<string, Product>& table, HashTable<string, Product>& categoryTable){
     // This is used to get the line from the sample data
     string currentLine;
     // Skip the headder line
@@ -74,6 +74,17 @@ void Inventory::parse(ifstream &file, HashTable<string, Product>& table){
 
 		// After seprating each information, add it into the table
 		table.insert(uniqID, product);
+
+		// I created a table categoryTable which uses the category as a key. This will be used for listInventory function
+		// Seprate the categories
+		// get the string
+		stringstream ss(product.category);
+		// seprate them using '|'
+		while(ss.good()){
+			string eachCategory;
+			getline(ss, eachCategory, '|');
+			categoryTable.insert(eachCategory, product);
+		}
 	}
 }
 
@@ -163,6 +174,7 @@ void Inventory::find(string inventoryID, HashTable<string, Product>& table)
 		cout << "Inventory/Product not found\n" << endl;
 	}else{
 		// Was able to find so print all details
+		// I like to make it line up so using \t to line them 
 		cout << "uniqId: \t\t" << inventoryProduct->uniqId << endl;
 		cout << "productName: \t\t" << inventoryProduct->productName << endl;
 		cout << "brandName: \t\t" << inventoryProduct->brandName << endl;
@@ -194,6 +206,22 @@ void Inventory::find(string inventoryID, HashTable<string, Product>& table)
 	}
 }
 
-void Inventory::listInventory(string category, HashTable<string, Product>& table)
-{
+void Inventory::listInventory(string category, HashTable<string, Product>& categoryTable){
+	// Get the table of the product that matches the category
+	vector<Product> products = categoryTable.findCategory(category);
+	// Check if they were actually able to find the product for the inventoryID
+	if(products.empty()){
+		// Not able to find
+		cout << "Invalid Category\n" << endl;
+	}else{
+		// Print all with the finding category
+		for(int i = 0; i < products.size(); i++){
+			cout << "uniqId: \t\t" << products[i].uniqId << endl;
+			cout << "productName: \t\t" << products[i].productName << "\n\n"<< endl;
+		}
+	}
+}
+
+vector<string> Inventory::seprateCategories(string line){
+    return vector<string>();
 }

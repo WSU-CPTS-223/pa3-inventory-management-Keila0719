@@ -257,6 +257,23 @@ void HashTable<Key, Value>::rehash(){
     delete[] currentTable;
 }
 
+template <typename Key, typename Value>
+vector<Value> HashTable<Key, Value>::findCategory(const string& category){
+    // Get the hash value of the category
+    int index = hash(category);
+    // Get the hashNode with the same index as the category
+    HashNode<Key,Value>* current = table[index];
+    // We want to return a vector so create a new vector
+    vector<Value> categories;
+    // One by one, put the information into the vector until there are no more information
+    while(current != nullptr){
+        categories.push_back(current->value);
+        current = current->next;
+    }
+    // Return the vector with all the products with the finding category
+    return categories;
+}
+
 // Getter for currentSize variable : return the currentSize
 template <typename Key, typename Value>
 int HashTable<Key, Value>::getCurrentSize()
