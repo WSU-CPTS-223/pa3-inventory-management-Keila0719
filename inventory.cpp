@@ -152,10 +152,48 @@ vector<string> Inventory::parseCSVFiles(string line)
 	return sepratedLine;
 }
 
-void Inventory::find(string uniqID)
+void Inventory::find(string inventoryID, HashTable<string, Product>& table)
 {
+	// Get the value of the inventoryID product
+	Product* inventoryProduct = table.find(inventoryID);
+
+	// Check if they were actually able to find the product for the inventoryID
+	if(inventoryProduct == nullptr){
+		// Not able to find
+		cout << "Inventory/Product not found\n" << endl;
+	}else{
+		// Was able to find so print all details
+		cout << "uniqId: \t\t" << inventoryProduct->uniqId << endl;
+		cout << "productName: \t\t" << inventoryProduct->productName << endl;
+		cout << "brandName: \t\t" << inventoryProduct->brandName << endl;
+		cout << "asin: \t\t\t" << inventoryProduct->asin << endl;
+		cout << "category: \t\t" << inventoryProduct->category << endl;
+		cout << "upcEanCode: \t\t" << inventoryProduct->upcEanCode << endl;
+		cout << "listPrice: \t\t" << inventoryProduct->listPrice << endl;
+		cout << "sellingPrice: \t\t" << inventoryProduct->sellingPrice << endl;
+		cout << "quantity: \t\t" << inventoryProduct->quantity << endl;
+		cout << "modelNumber: \t\t" << inventoryProduct->modelNumber << endl;
+		cout << "aboutProduct: \t\t" << inventoryProduct->aboutProduct << endl;
+		cout << "productSpecification: \t" << inventoryProduct->productSpecification << endl;
+		cout << "technicalDetails: \t" << inventoryProduct->technicalDetails << endl;
+		cout << "shippingWeight: \t" << inventoryProduct->shippingWeight << endl;
+		cout << "productDimensions: \t" << inventoryProduct->productDimensions << endl;
+		cout << "image: \t\t\t" << inventoryProduct->image << endl;
+		cout << "variants: \t\t" << inventoryProduct->variants << endl;
+		cout << "sku: \t\t\t" << inventoryProduct->sku << endl;
+		cout << "productUrl: \t\t" << inventoryProduct->productUrl << endl;
+		cout << "stock: \t\t\t" << inventoryProduct->stock << endl;
+		cout << "productDetails: \t" << inventoryProduct->productDetails << endl;
+		cout << "dimensions: \t\t" << inventoryProduct->dimensions << endl;
+		cout << "color: \t\t\t" << inventoryProduct->color << endl;
+		cout << "ingredients: \t\t" << inventoryProduct->ingredients << endl;
+		cout << "directionToUse: \t" << inventoryProduct->directionToUse << endl;
+		cout << "isAmazonSeller: \t" << inventoryProduct->isAmazonSeller << endl;
+		cout << "sizeQuantityVariant: \t" << inventoryProduct->sizeQuantityVariant << endl;
+		cout << "productDescription: \t" << inventoryProduct->productDescription << endl;
+	}
 }
 
-void Inventory::listInventory(string category)
+void Inventory::listInventory(string category, HashTable<string, Product>& table)
 {
 }

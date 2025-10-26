@@ -15,6 +15,6 @@ class Inventory{
 public:
     vector<string> parseCSVFiles(string line);
     void parse(ifstream& file, HashTable<string, Product>& table);
-    void find(string uniqID);
-    void listInventory(string category);
+    void find(string inventoryID, HashTable<string, Product>& table);
+    void listInventory(string category, HashTable<string, Product>& table);
 };
