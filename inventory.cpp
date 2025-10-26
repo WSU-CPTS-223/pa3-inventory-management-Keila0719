@@ -1,6 +1,6 @@
 #include "inventory.hpp"
 
-void Inventory::parse(ifstream &file, HashTable<string, Product>& table, HashTable<string, Product>& categoryTable){
+void Inventory::parse(ifstream &file, HashTable<string, Product>& table, HashTable<string, vector<Product>>& categoryTable){
     // This is used to get the line from the sample data
     string currentLine;
     // Skip the headder line
@@ -78,12 +78,20 @@ void Inventory::parse(ifstream &file, HashTable<string, Product>& table, HashTab
 		// I created a table categoryTable which uses the category as a key. This will be used for listInventory function
 		// Seprate the categories
 		// get the string
-		stringstream ss(product.category);
+		std::stringstream categoryStream(product.category);
+
 		// seprate them using '|'
 		while(ss.good()){
 			string eachCategory;
 			getline(ss, eachCategory, '|');
-			categoryTable.insert(eachCategory, product);
+			// Check if that category already exist
+			vector<Product>* exist = categoryTable.find(eachCategory);
+			if(exist == nullptr){ 
+				// If that category doesn't exist, create a new list with that category
+				vector<Product> newList = { product };
+				// insert the category and the newlist with the product inside the table
+				categoryTable.insert(eachCategory, newList);
+			}
 		}
 	}
 }
@@ -206,7 +214,7 @@ void Inventory::find(string inventoryID, HashTable<string, Product>& table)
 	}
 }
 
-void Inventory::listInventory(string category, HashTable<string, Product>& categoryTable){
+void Inventory::listInventory(string category, HashTable<string, vector<Product>>& categoryTable){
 	// Get the table of the product that matches the category
 	vector<Product> products = categoryTable.findCategory(category);
 	// Check if they were actually able to find the product for the inventoryID
@@ -220,8 +228,4 @@ void Inventory::listInventory(string category, HashTable<string, Product>& categ
 			cout << "productName: \t\t" << products[i].productName << "\n\n"<< endl;
 		}
 	}
-}
-
-vector<string> Inventory::seprateCategories(string line){
-    return vector<string>();
 }

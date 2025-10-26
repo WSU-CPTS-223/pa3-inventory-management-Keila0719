@@ -1,3 +1,6 @@
+#include "inventory.hpp"
+#include "hashTable.hpp"
+
 #include <iostream>
 #include <string>
 
@@ -48,10 +51,15 @@ void bootStrap()
     // example: reading from CSV and initializing the data structures
     // Don't dump all code into this single function
     // use proper programming practices
+        
 }
 
 int main(int argc, char const *argv[])
 {
+    // Create two hashTables that will be used in this program. initial capacity set as 101
+    HashTable<string, Product> table(101);
+    HashTable<string, vector<Product>> categoryTable(101);
+
     string line;
     bootStrap();
     while (getline(cin, line) && line != ":quit")
