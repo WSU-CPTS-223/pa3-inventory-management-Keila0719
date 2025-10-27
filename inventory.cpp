@@ -104,6 +104,8 @@ void Inventory::parse(ifstream &file, HashTable<string, Product>& table, HashTab
 				vector<Product> newList = { product };
 				// insert the category and the newlist with the product inside the table
 				categoryTable.insert(eachCategory, newList);
+			}else{ //If the category does already exist, add it after the existing stuff
+				exist->push_back(product);
 			}
 			// COMMENT OUT LATER: used it to check if it actually got inserted
 			//listInventory(eachCategory, categoryTable);

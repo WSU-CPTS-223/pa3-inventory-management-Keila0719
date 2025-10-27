@@ -16,6 +16,15 @@ void printHelp()
     cout << " Use :quit to quit the REPL" << endl;
 }
 
+void printTest()
+{
+    cout << "Supported list of commands: " << endl;
+    cout << " 1. insert - Tests if " << endl;
+    cout << " 2. listInventory <category_string> - Lists just the id and name of all inventory belonging to the specified category. If the category doesn't exists, prints 'Invalid Category'.\n"
+         << endl;
+    cout << " Use :quit to quit the REPL" << endl;
+}
+
 bool validCommand(string line)
 {
     return (line == ":help") ||
@@ -39,6 +48,10 @@ void evalCommand(string line, HashTable<string, Product>& table, HashTable<strin
         while(inventoryid[0] == ' '){
             inventoryid = inventoryid.substr(1);
         }
+        // Check if there are extra spaces at the end
+        while(inventoryid[inventoryid.size()-1] == ' '){
+			inventoryid = inventoryid.substr(0, inventoryid.size() - 1);
+		}
         // Check if the string is empty or not
         if(inventoryid.empty()){
             cout << "find <inventoryid>: your inventoryid is empty. Please type the id you want to search after find\n"<< endl;
@@ -55,6 +68,10 @@ void evalCommand(string line, HashTable<string, Product>& table, HashTable<strin
         while(category_string[0] == ' '){
             category_string = category_string.substr(1);
         }
+        // Check if there is extra space at the end
+        while(category_string[category_string.size()-1] == ' '){
+				category_string = category_string.substr(0, category_string.size() - 1);
+		}
         // Check if the string is empty or not
         if(category_string.empty()){
             cout << "listInventory <category_string>: your category_string is empty. Please type the id you want to search after listInventory\n"<< endl;
@@ -109,7 +126,9 @@ int main(int argc, char const *argv[])
         {
             cout << "Command not supported. Enter :help for list of supported commands" << endl;
         }
-        cout << "> ";
+        cout << "_____________________________________________________________________________\n" << endl;
+        cout << " Enter:\n\t:quit - exit. \n\t:help - list supported commands.\n\t:test - list test operations" << endl;
+        cout << "\n> ";
     }
     return 0;
 }
