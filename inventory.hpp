@@ -19,5 +19,4 @@ public:
     void parse(ifstream& file, HashTable<string, Product>& table, HashTable<string, vector<Product>>& categoryTable);
     void find(string inventoryID, HashTable<string, Product>& table);
     void listInventory(string category, HashTable<string, vector<Product>>& categoryTable);
-    vector<string> seprateCategories(string line);
 };

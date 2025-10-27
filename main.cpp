@@ -1,6 +1,7 @@
 #include "inventory.hpp"
 #include "hashTable.hpp"
 #include "product.hpp"
+#include "test.hpp"
 
 #include <iostream>
 #include <string>
@@ -16,28 +17,64 @@ void printHelp()
     cout << " Use :quit to quit the REPL" << endl;
 }
 
-void printTest()
+void test()
 {
+    string line;
+    Test tests;
+    // These are for my testing functions
+    HashTable<string, string> testTable(101);
+    HashTable<string, Product> testNormalTable(101);
+    HashTable<string, vector<Product>> testCategoryTable(101);
+        cout << "_________________________________________________________________________________________________________________________________________________________________________________________" << endl;
+
+    cout << "Parsing already happened\n" << endl;
+    tests.testParse(testNormalTable, testCategoryTable);
+
     cout << "Supported list of commands: " << endl;
-    cout << " 1. insert - Tests if " << endl;
-    cout << " 2. listInventory <category_string> - Lists just the id and name of all inventory belonging to the specified category. If the category doesn't exists, prints 'Invalid Category'.\n"
-         << endl;
-    cout << " Use :quit to quit the REPL" << endl;
+    cout << " 1. testInsert - Tests if the insertion is working (Recommend doing the insertion before doing the other operation since doing other function in a empty table is pointless)\n" << endl;
+    //cout << " 2. testParse - Tests if parsing works by using a smaller csv file\n" << endl;
+    cout << " 3. testFind - Tests if the listInventory function is working\n" << endl;
+    cout << " 4. testListInventory - Tests if the listInventory function is working\n" << endl;
+    cout << " 5. exit - Exit from the test menu" << endl;
+    while (getline(cin, line) && line != ":quit")
+        {
+        if (line == "testInsert")
+        {
+            tests.testInsert(testTable);
+        }else if (line == "testFind")
+        {
+            tests.testFind(testNormalTable);
+        }else if (line == "testListInventory")
+        {
+            tests.testListInventory(testCategoryTable);
+        }
+        cout << "Supported list of commands: " << endl;
+        cout << "_________________________________________________________________________________________________________________________________________________________________________________________" << endl;
+        cout << " 1. testInsert - Tests if the insertion is working (Recommend doing the insertion before doing the other operation since doing other function in a empty table is pointless)\n" << endl;
+        //cout << " 2. testParse - Tests if parsing works by using a smaller csv file\n" << endl;
+        cout << " 3. testFind - Tests if the listInventory function is working\n" << endl;
+        cout << " 4. testListInventory - Tests if the listInventory function is working\n" << endl;
+        cout << " 5. exit - Exit from the test menu" << endl;
+    }
+    return;
 }
 
 bool validCommand(string line)
 {
     return (line == ":help") ||
            (line.rfind("find", 0) == 0) ||
-           (line.rfind("listInventory") == 0);
+           (line.rfind("listInventory") == 0) ||
+           (line == ":test");
 }
 
-void evalCommand(string line, HashTable<string, Product>& table, HashTable<string, vector<Product>>& categoryTable)
-{
+void evalCommand(string line, HashTable<string, Product>& table, HashTable<string, vector<Product>>& categoryTable){
     Inventory inventory;
     if (line == ":help")
     {
         printHelp();
+    }else if (line == ":test")
+    {
+        test(); 
     }
     // if line starts with find
     else if (line.rfind("find", 0) == 0)
@@ -45,11 +82,11 @@ void evalCommand(string line, HashTable<string, Product>& table, HashTable<strin
         // find the inventoryid that the user entered after "find "
         string inventoryid = line.substr(4);
         // Check if there are extra spaces infront of the inventoryid, if there are, erase it
-        while(inventoryid[0] == ' '){
+        while(!inventoryid.empty() && inventoryid[0] == ' '){
             inventoryid = inventoryid.substr(1);
         }
         // Check if there are extra spaces at the end
-        while(inventoryid[inventoryid.size()-1] == ' '){
+        while(!inventoryid.empty() && inventoryid[inventoryid.size()-1] == ' '){
 			inventoryid = inventoryid.substr(0, inventoryid.size() - 1);
 		}
         // Check if the string is empty or not
@@ -81,10 +118,9 @@ void evalCommand(string line, HashTable<string, Product>& table, HashTable<strin
     }
 }
 
-void bootStrap(ifstream &file, HashTable<string, Product>& table, HashTable<string, vector<Product>>& categoryTable)
-{
+void bootStrap(ifstream &file, HashTable<string, Product>& table, HashTable<string, vector<Product>>& categoryTable){
     cout << "\n Welcome to Amazon Inventory Query System" << endl;
-    cout << " enter :quit to exit. or :help to list supported commands." << endl;
+    cout << " enter \n\t:quit - exit.\n\t:help - list supported commands.\n\t:test - goes to test menu with available test commands." << endl;
     cout << "\n> ";
     // TODO: Do all your bootstrap operations here
     // example: reading from CSV and initializing the data structures
@@ -104,6 +140,8 @@ int main(int argc, char const *argv[])
     HashTable<string, Product> table(101);
     HashTable<string, vector<Product>> categoryTable(101);
 
+    
+    
     // Open the csv file
     ifstream file("marketing_sample_for_amazon_com-ecommerce__20200101_20200131__10k_data.csv");
 

@@ -23,12 +23,13 @@ public:
 
     int hash(const Key& key);
     bool insert(const Key& key, const Value& value);
-    bool remove(const Key& key);
+    //bool remove(const Key& key);
     Value* find(const Key& key);
     void clear();
     void rehash();
     vector<Product> findCategory(const string& category);
 
+    HashNode<Key, Value>* getBucket(int index);
     int getCurrentSize();
     int getCapacity();
     double getLoadFactor();
@@ -120,53 +121,55 @@ bool HashTable<Key, Value>::insert(const Key& key, const Value& value){
     // return true, meaning the insertion was successful
     return true;
 }
+// I don't think we need remove function... I found out after I created the function ;-; I will still keep it here to show my work...
+    /* Remove Function:
+        Accepts: 
+                const Key& Key
+        Return: 
+                Bool (True = succesful, False = not successful)
+        Description:
+                Accepts the key of what we want to remove. It will first get the index of that key and get the table of that index.
+                We will check if that removing key exist in the table by looping. If we couldn't find that key, it will return false
+                to show it was not successful. If it was able to find that key, remove it and return true to show it was successful.
+    // */ 
+    // template<typename Key, typename Value>
+    // bool HashTable<Key, Value>::remove(const Key& key){
+    //     // Get the index of where the key is
+    //     int index = hash(key);
+    //     // Get the current table of that index
+    //     HashNode<Key,Value>* current = table[index];
+    //     // Make a previous one which will be used later
+    //     HashNode<Key,Value>* previous = nullptr;
+    //
+    //     // Loop until we find the key or we reach the end
+    //     while(current != nullptr){
+    //         // Check if the current key is the same as the key we want to remove
+    //         if(current->key == key){
+    //             // If yes, remove that node
+    //             // but first check if current is head. current is head when previous is a nullptr
+    //             if(previous == nullptr){
+    //                 // remove current by making the current table as what we have after current
+    //                 table[index] = current->next;
+    //             }else{  // Meaning the current is not a head
+    //                 // remove the current by skipping it
+    //                 previous->next = current->next;
+    //             }
+    //             // delete the current
+    //             delete current;
+    //             // Since we removed a node, decrease the currentsize by 1
+    //             currentSize--;
+    //             // After removing, return true to show it was successful
+    //             return true;
+    //         }
+    //         // If the current key was not the same as the removing key, go to the next node and save the previous node
+    //         previous = current;
+    //         current = current->next;
+    //     }
+    //     // If we reach the end, meaning the key didn't exist in the table, return false to show it was not successful
+    //     return false;
+    // }
 
-/* Remove Function:
-    Accepts: 
-            const Key& Key
-    Return: 
-            Bool (True = succesful, False = not successful)
-    Description:
-            Accepts the key of what we want to remove. It will first get the index of that key and get the table of that index.
-            We will check if that removing key exist in the table by looping. If we couldn't find that key, it will return false
-            to show it was not successful. If it was able to find that key, remove it and return true to show it was successful.
-*/ 
-template<typename Key, typename Value>
-bool HashTable<Key, Value>::remove(const Key& key){
-    // Get the index of where the key is
-    int index = hash(key);
-    // Get the current table of that index
-    HashNode<Key,Value>* current = table[index];
-    // Make a previous one which will be used later
-    HashNode<Key,Value>* previous = nullptr;
 
-    // Loop until we find the key or we reach the end
-    while(current != nullptr){
-        // Check if the current key is the same as the key we want to remove
-        if(current->key == key){
-            // If yes, remove that node
-            // but first check if current is head. current is head when previous is a nullptr
-            if(previous == nullptr){
-                // remove current by making the current table as what we have after current
-                table[index] = current->next;
-            }else{  // Meaning the current is not a head
-                // remove the current by skipping it
-                previous->next = current->next;
-            }
-            // delete the current
-            delete current;
-            // Since we removed a node, decrease the currentsize by 1
-            currentSize--;
-            // After removing, return true to show it was successful
-            return true;
-        }
-        // If the current key was not the same as the removing key, go to the next node and save the previous node
-        previous = current;
-        current = current->next;
-    }
-    // If we reach the end, meaning the key didn't exist in the table, return false to show it was not successful
-    return false;
-}
 
 /* Find Function:
     Accepts: 
@@ -307,6 +310,14 @@ inline vector<Product> HashTable<string, vector<Product>>::findCategory(const st
     } else {// if not return a empty vector
         return vector<Product>();
     }
+}
+
+// Getter for getting the bucket at index inserted
+template <typename Key, typename Value>
+inline HashNode<Key, Value> *HashTable<Key, Value>::getBucket(int index)
+{
+    if (index < 0 || index >= capacity) return nullptr;
+    return table[index];
 }
 
 // Getter for currentSize variable : return the currentSize
