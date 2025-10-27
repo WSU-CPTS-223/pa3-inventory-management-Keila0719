@@ -2,6 +2,10 @@
 #include "hashNode.hpp"
 #include "product.hpp"
 
+#include <iostream>  // for std::cout, std::endl
+#include <vector>    // for std::vector
+#include <type_traits> // for std::is_same (used in if constexpr)
+
 #include <iostream>
 #include <string>
 #include <vector>
@@ -23,7 +27,7 @@ public:
     Value* find(const Key& key);
     void clear();
     void rehash();
-    vector<Value> findCategory(const Key& category);
+    vector<Product> findCategory(const string& category);
 
     int getCurrentSize();
     int getCapacity();
@@ -38,12 +42,12 @@ private:
 
 //Constructor
 template<typename Key, typename Value>
-HashTable<Key, Value>::HashTable(int newCapacity): currentSize(0), capacity(newCapacity){
-    table = new HashNode<Key, Value>*[newCapacity];
-    for (int i = 0; i < newCapacity; ++i) {
+HashTable<Key, Value>::HashTable(int newCapacity) : currentSize(0), capacity(newCapacity){
+    table = new HashNode<Key, Value>*[capacity];
+    for (int i = 0; i < capacity; ++i) {
         table[i] = nullptr;
     }
-} 
+}
  
 // Destructor : clear all the node inside the table
 template<typename Key, typename Value>
@@ -293,8 +297,8 @@ void HashTable<Key, Value>::rehash(){
     delete[] currentTable;
 }
 
-template <typename Key, typename Value>
-vector<Value> HashTable<Key, Value>::findCategory(const Key& category) {
+template <>
+inline vector<Product> HashTable<string, vector<Product>>::findCategory(const string& category) {
     // Find the values with the same category inputted
     vector<Product>* result = this->find(category);
     // Check if the result was found or not

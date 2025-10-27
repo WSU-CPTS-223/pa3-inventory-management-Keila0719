@@ -1,10 +1,19 @@
-out: clean compile execute
+# Compiler
+CXX = g++
+CXXFLAGS = -std=c++11 -Wall
 
-compile: main.cpp
-	g++ -g -Wall -std=c++14 main.cpp -o mainexe
+# Executable name
+TARGET = game
 
-execute: mainexe
-	./mainexe
+# Source files
+SRCS = main.cpp hashTable.hpp inventory.cpp 
 
+# Build rule
+all: $(TARGET)
+
+$(TARGET):
+	$(CXX) $(CXXFLAGS) -o $(TARGET) $(SRCS)
+
+# Clean
 clean:
-	rm -f mainexe
+	rm -f $(TARGET)

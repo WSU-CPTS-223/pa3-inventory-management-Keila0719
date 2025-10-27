@@ -19,71 +19,84 @@ void Inventory::parse(ifstream &file, HashTable<string, Product>& table, HashTab
 		// For uniqID
 		string uniqID = sepratedLine[0];
 		product.uniqId = uniqID;
+		// For productname
+		product.productName = sepratedLine[1];
 		// For brandName
-		product.brandName = sepratedLine[1];
+		product.brandName = sepratedLine[2];
 		// For asin
-		product.asin = sepratedLine[2];
+		product.asin = sepratedLine[3];
 		// For category
-		product.category = sepratedLine[3];
+		product.category = sepratedLine[4];
 		// For upcEanCode
-		product.upcEanCode = sepratedLine[4];
+		product.upcEanCode = sepratedLine[5];
 		// For listPrice
-		product.listPrice = sepratedLine[5];
+		product.listPrice = sepratedLine[6];
 		// For sellingPrice
-		product.sellingPrice = sepratedLine[6];
+		product.sellingPrice = sepratedLine[7];
 		// For quantity
-		product.quantity = sepratedLine[7];
+		product.quantity = sepratedLine[8];
 		// For modelNumber
-		product.modelNumber = sepratedLine[8];
+		product.modelNumber = sepratedLine[9];
 		// For aboutProduct
-		product.aboutProduct = sepratedLine[9];
+		product.aboutProduct = sepratedLine[10];
 		// For productSpecification
-		product.productSpecification = sepratedLine[10];
+		product.productSpecification = sepratedLine[11];
 		// For technicalDetails
-		product.technicalDetails = sepratedLine[11];
+		product.technicalDetails = sepratedLine[12];
 		// For shippingWeight
-		product.shippingWeight = sepratedLine[12];
+		product.shippingWeight = sepratedLine[13];
 		// For productDimensions
-		product.productDimensions = sepratedLine[13];
+		product.productDimensions = sepratedLine[14];
 		// For image
-		product.image = sepratedLine[14];
+		product.image = sepratedLine[15];
 		// For variants
-		product.variants = sepratedLine[15];
+		product.variants = sepratedLine[16];
 		// For sku
-		product.sku = sepratedLine[16];
+		product.sku = sepratedLine[17];
 		// For productUrl
-		product.productUrl = sepratedLine[17];		
+		product.productUrl = sepratedLine[18];		
 		// For stock
-		product.stock = sepratedLine[18];
+		product.stock = sepratedLine[19];
 		// For productDetails
-		product.productDetails = sepratedLine[19];
+		product.productDetails = sepratedLine[20];
 		// For dimensions
-		product.dimensions = sepratedLine[20];
+		product.dimensions = sepratedLine[21];
 		// For color
-		product.color = sepratedLine[21];
+		product.color = sepratedLine[22];
 		// For ingredients
-		product.ingredients = sepratedLine[22];
+		product.ingredients = sepratedLine[23];
 		// For directionToUse
-		product.directionToUse = sepratedLine[23];
+		product.directionToUse = sepratedLine[24];
 		// For isAmazonSeller
-		product.isAmazonSeller = sepratedLine[24];
+		product.isAmazonSeller = sepratedLine[25];
 		// For sizeQuantityVariant
-		product.sizeQuantityVariant = sepratedLine[25];
+		product.sizeQuantityVariant = sepratedLine[26];
 		// For productDescription
-		product.productDescription = sepratedLine[26];
+		product.productDescription = sepratedLine[27];
 
 		// After seprating each information, add it into the table
 		table.insert(uniqID, product);
-
+		// COMMENT OUT LATER: used it to check if it actually got inserted
+		//find(uniqID, table);
+		
 		// I created a table categoryTable which uses the category as a key. This will be used for listInventory function
 		// Seprate the categories
 		// get the string
 		std::stringstream categoryStream(product.category);
 
 		// seprate them using '|'
-		while(ss.good()){
+		while(categoryStream.good()){
 			string eachCategory;
-			getline(ss, eachCategory, '|');
+			getline(categoryStream, eachCategory, '|');
+			//Take the space out from the front and back
+			// From the front
+			while(eachCategory[0] == ' '){
+				eachCategory = eachCategory.substr(1);
+			}
+			// From the back
+			while(eachCategory[eachCategory.size()-1] == ' '){
+				eachCategory = eachCategory.substr(0, eachCategory.size() - 1);
+			}
 			// Check if that category already exist
 			vector<Product>* exist = categoryTable.find(eachCategory);
 			if(exist == nullptr){ 
@@ -92,9 +105,13 @@ void Inventory::parse(ifstream &file, HashTable<string, Product>& table, HashTab
 				// insert the category and the newlist with the product inside the table
 				categoryTable.insert(eachCategory, newList);
 			}
+			// COMMENT OUT LATER: used it to check if it actually got inserted
+			//listInventory(eachCategory, categoryTable);
 		}
+		
 	}
 }
+
 
 /* parseCSVFiles Function:
     Accepts: 
@@ -123,28 +140,22 @@ vector<string> Inventory::parseCSVFiles(string line)
 	bool isInQuotes = false;
 	//check if there is a quote at the front and back of the string
 	for(int i = 0; i < line.size(); i++){ // There are 27 categories in the string line
-		char c = line[i];
 		// Check if the current category is the start of the quote, end of the quote or the word inside the quotes
 		if(isInQuotes){ // Since true, we already started the word that has a quote.
 			// Check if the current character is a quote or not
 			if(line[i] == '"'){
-				// Check if it has a comma after
-				i++;
-				if(line[i] == ','){ //This means the category ended
-					// Add the category string into the sepratedLine vector
-					sepratedLine.push_back(category); 
-					// Reset the category string so we can add the characters for the next category
-					category.clear(); 
-					// Reset the charCount
-					charCount = 0;
-					// Reset the bool variable
+				// Check if it's an quote inside the string
+				if(i+1 < line.size() && line[i+1] == '"'){ 
+					// If yes, add a quote into category string
+					category += '"';
+					i++;
+				}else{
+					// If not, it's the end of the quote
 					isInQuotes = false;
-				}else{ // This means the category did not end and this quote is just one of the letter from that category
-					i--;
+				}
+			}else{	// If the current letter is not a quote
 					// Add that letter into the string
 					category += line[i];
-					charCount ++;
-				}
 			}
 		}else{ // If false, it means it's the start quote or it just doesn't have a quote for this category
 			// Check if the current character is a quote
@@ -156,10 +167,15 @@ vector<string> Inventory::parseCSVFiles(string line)
 				if(line[i] == ','){ // This means that it's the end of that category
 					// Add the category string into the sepratedLine vector
 					sepratedLine.push_back(category); 
+					//cout << "" << category << endl;
+
 					// Reset the category string so we can add the characters for the next category
 					category.clear(); 
 					// Reset the charCount
 					charCount = 0;
+				}else{
+					category += line[i];
+					charCount ++;
 				}
 			}
 		}
@@ -167,6 +183,20 @@ vector<string> Inventory::parseCSVFiles(string line)
 	// Push the last catgory
 	sepratedLine.push_back(category);
 
+	// TESTING IF IT WORKS : COMMENT OUT LATER
+	/*
+	if(sepratedLine.size() != 28){
+		if(sepratedLine.size() > 28){
+			cout<< "larger: " << sepratedLine.size() << " " << sepratedLine[0] << endl; 
+		}else{
+			cout<< "smaller: " << sepratedLine[0] << endl; 
+			while(sepratedLine.size() != 27){
+				sepratedLine.push_back("");
+			}
+		}
+	}
+	*/
+	
 	// Once we are done seprating data into each category, return the vector with all the seprated category
 	return sepratedLine;
 }
@@ -210,7 +240,7 @@ void Inventory::find(string inventoryID, HashTable<string, Product>& table)
 		cout << "directionToUse: \t" << inventoryProduct->directionToUse << endl;
 		cout << "isAmazonSeller: \t" << inventoryProduct->isAmazonSeller << endl;
 		cout << "sizeQuantityVariant: \t" << inventoryProduct->sizeQuantityVariant << endl;
-		cout << "productDescription: \t" << inventoryProduct->productDescription << endl;
+		cout << "productDescription: \t\n" << inventoryProduct->productDescription << endl;
 	}
 }
 
