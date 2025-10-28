@@ -21,10 +21,12 @@ public:
     void add(const Value& value);
     void clear();
     bool empty() const;
+
+    //getters
     Value* getData(int index);
     int getLength() const;
     
-
+    //operators
     ArrayList<Value>& operator=(const ArrayList& other);
     Value& operator[](int index);
 };

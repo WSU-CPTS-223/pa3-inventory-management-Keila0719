@@ -130,8 +130,8 @@ void evalCommand(string line, HashTable<string, Product>& table, HashTable<strin
 		}
         // Check if the string is empty or not
         if(category_string.empty()){
-            cout << "Searching products with empty category\n" << endl;
-            inventory.listInventory("", categoryTable);
+            cout << "listInventory <category_string> : your category_string is empty. Please type the category you want to search after listInventory\n"<< endl;
+
         }else{
             inventory.listInventory(category_string, categoryTable);
         }
