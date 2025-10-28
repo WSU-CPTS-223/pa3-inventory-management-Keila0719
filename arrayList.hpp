@@ -164,11 +164,5 @@ inline ArrayList<Value> &ArrayList<Value>::operator=(const ArrayList &other)
 
 template <typename Value>
 inline Value &ArrayList<Value>::operator[](int index) {
-    // Check if the index is with in 0 to length
-    if (index < 0 || index >= length) {
-        //cout<< ("ArrayList index out of bounds") << endl;
-
-    }
-    // If it is, return the data
     return data[index];
 }
