@@ -2,6 +2,7 @@
 using std::cout;
 using std::endl;
 
+// This is used to test the insert function with more simple information
 void Test::testInsert(HashTable<string, string> &testTable)
 {
     
@@ -10,8 +11,6 @@ void Test::testInsert(HashTable<string, string> &testTable)
     testTable.insert("red", "1");
     testTable.insert("red", "0");
     testTable.insert("blue", "2");
-    //testTable.insert("a", nullptr);
-    //testTable.insert(nullptr, "3");
     testTable.insert("green", "3");
     testTable.insert("yellow", "4");
     testTable.insert("brown", "5");
@@ -34,7 +33,8 @@ void Test::testInsert(HashTable<string, string> &testTable)
     }
 }
 
-void Test::testParse(HashTable<string, Product> &testNormalTable, HashTable<string, vector<Product>>& testCategoryTable)
+// This is used to test if parse function works. we are using a smaller data to see if it works
+void Test::testParse(HashTable<string, Product> &testNormalTable, HashTable<string, ArrayList<Product>>& testCategoryTable)
 {
     cout<< "TESTING PARSING\nSince the actual data is hugem I made a sample .csv file with the copy of the first 10 data from the actual csv file.\nI will going to test if parsing is working by using that file." <<endl;
     // Open the csv file
@@ -49,8 +49,13 @@ void Test::testParse(HashTable<string, Product> &testNormalTable, HashTable<stri
     // We will parse the test_marketing_sample.csv file and insert information into testNormalTable and testCategoryTable
     Inventory inventory;
     inventory.parse(file, testNormalTable, testCategoryTable);
+
+    // Close file after parsing
+    file.close();
+
 }
 
+// This is used to test if the find function works and using a smaller hashtable
 void Test::testFind(HashTable<string, Product> &testNormalTable)
 {
     cout<< "TESTING FIND <INVENTORYID>\n I will be using testNormalTable to do this operation." << endl;
@@ -66,7 +71,8 @@ void Test::testFind(HashTable<string, Product> &testNormalTable)
     inventory.find(find3, testNormalTable);
 }
 
-void Test::testListInventory(HashTable<string, vector<Product>>& testCategoryTable)
+// This is used to test if the listInventory function works and using a smaller hashtable
+void Test::testListInventory(HashTable<string, ArrayList<Product>>& testCategoryTable)
 {
     cout<< "TESTING LISTINVENTORY <CATEGORY_STRING>\n I will be using testNormalTable to do this operation." << endl;
     Inventory inventory;

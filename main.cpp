@@ -1,7 +1,21 @@
+/*
+Programmer: Keila Holcombe
+Assignment: PA3
+Class: CPT223 Fall 2025	
+Date: 10-23-2025
+Description:    
+        Save the data given by the .csv file into a HashTree. I created two trees. One with the uniqID as the key and one as the category
+        as the key. There will be two main functions, find <inventoryid> and listInventory <category_string>. The find function will accepts
+        a string of inventoryid where it will find the product with a uniqID that matches the id that was inserted by the user and prints all
+        the information about that product. The listInventory function will accepts a string of category_string where the user will enter a 
+        category and the function will print the uniqid and product name for all the products that is under that category.
+*/
+
 #include "inventory.hpp"
 #include "hashTable.hpp"
 #include "product.hpp"
 #include "test.hpp"
+#include "arrayList.hpp"
 
 #include <iostream>
 #include <string>
@@ -17,15 +31,17 @@ void printHelp()
     cout << " Use :quit to quit the REPL" << endl;
 }
 
+// This is the function to access the test function
 void test()
 {
     string line;
     Test tests;
+
     // These are for my testing functions
     HashTable<string, string> testTable(101);
     HashTable<string, Product> testNormalTable(101);
-    HashTable<string, vector<Product>> testCategoryTable(101);
-        cout << "_________________________________________________________________________________________________________________________________________________________________________________________" << endl;
+    HashTable<string, ArrayList<Product>> testCategoryTable(101);
+        cout << "____________________________________________________________________________________________" << endl;
 
     cout << "Parsing already happened\n" << endl;
     tests.testParse(testNormalTable, testCategoryTable);
@@ -36,7 +52,10 @@ void test()
     cout << " 3. testFind - Tests if the listInventory function is working\n" << endl;
     cout << " 4. testListInventory - Tests if the listInventory function is working\n" << endl;
     cout << " 5. exit - Exit from the test menu" << endl;
-    while (getline(cin, line) && line != ":quit")
+
+    // DIrect the user depending on what funciton they choose.
+    // loops until they quit
+    while (getline(cin, line) && line != "exit")
         {
         if (line == "testInsert")
         {
@@ -49,7 +68,7 @@ void test()
             tests.testListInventory(testCategoryTable);
         }
         cout << "Supported list of commands: " << endl;
-        cout << "_________________________________________________________________________________________________________________________________________________________________________________________" << endl;
+        cout << "____________________________________________________________________________________________" << endl;
         cout << " 1. testInsert - Tests if the insertion is working (Recommend doing the insertion before doing the other operation since doing other function in a empty table is pointless)\n" << endl;
         //cout << " 2. testParse - Tests if parsing works by using a smaller csv file\n" << endl;
         cout << " 3. testFind - Tests if the listInventory function is working\n" << endl;
@@ -67,7 +86,7 @@ bool validCommand(string line)
            (line == ":test");
 }
 
-void evalCommand(string line, HashTable<string, Product>& table, HashTable<string, vector<Product>>& categoryTable){
+void evalCommand(string line, HashTable<string, Product>& table, HashTable<string, ArrayList<Product>>& categoryTable){
     Inventory inventory;
     if (line == ":help")
     {
@@ -111,23 +130,22 @@ void evalCommand(string line, HashTable<string, Product>& table, HashTable<strin
 		}
         // Check if the string is empty or not
         if(category_string.empty()){
-            cout << "listInventory <category_string>: your category_string is empty. Please type the id you want to search after listInventory\n"<< endl;
+            cout << "Searching products with empty category\n" << endl;
+            inventory.listInventory("", categoryTable);
         }else{
             inventory.listInventory(category_string, categoryTable);
         }
     }
 }
 
-void bootStrap(ifstream &file, HashTable<string, Product>& table, HashTable<string, vector<Product>>& categoryTable){
+void bootStrap(ifstream &file, HashTable<string, Product>& table, HashTable<string, ArrayList<Product>>& categoryTable){
     cout << "\n Welcome to Amazon Inventory Query System" << endl;
-    cout << " enter \n\t:quit - exit.\n\t:help - list supported commands.\n\t:test - goes to test menu with available test commands." << endl;
+    cout << " enter \n\t:quit - exit.\n\t:help - list supported commands.\n\t:test - goes to test menu with available test commands (only able to do the test commands here)." << endl;
     cout << "\n> ";
     // TODO: Do all your bootstrap operations here
     // example: reading from CSV and initializing the data structures
     // Don't dump all code into this single function
     // use proper programming practices
-
-    
 
     // Parse data into the two tables
     Inventory inventory;
@@ -138,7 +156,7 @@ int main(int argc, char const *argv[])
 {
     // Create two hashTables that will be used in this program. initial capacity set as 101
     HashTable<string, Product> table(101);
-    HashTable<string, vector<Product>> categoryTable(101);
+    HashTable<string, ArrayList<Product>> categoryTable(101);
 
     
     
@@ -168,5 +186,8 @@ int main(int argc, char const *argv[])
         cout << " Enter:\n\t:quit - exit. \n\t:help - list supported commands.\n\t:test - list test operations" << endl;
         cout << "\n> ";
     }
+
+    // exit from file 
+    file.close();
     return 0;
 }

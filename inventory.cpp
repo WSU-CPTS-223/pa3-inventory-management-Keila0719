@@ -1,6 +1,21 @@
 #include "inventory.hpp"
+#include "arrayList.hpp"
 
-void Inventory::parse(ifstream &file, HashTable<string, Product>& table, HashTable<string, vector<Product>>& categoryTable){
+/* parse Function:
+    Accepts: 
+            ifstream &file, HashTable<string, Product>& table, HashTable<string, ArrayList<Product>>& categoryTable
+    Return: 
+            void
+    Description:
+            It will read line by line from the file inserted and by using the function parseCSVFile, it will seprate the
+			line into each of their category and insert it into each table.
+				table is used to store information using uniqID as the key 
+				categoryTable is used to store information using category as the key and insert each product that is under
+				that category.
+			Some products are under multiple category and in that case, it will be inserted into all the category they are
+			categorized as.
+*/ 
+void Inventory::parse(ifstream &file, HashTable<string, Product>& table, HashTable<string, ArrayList<Product>>& categoryTable){
     // This is used to get the line from the sample data
     string currentLine;
     // Skip the headder line
@@ -14,103 +29,126 @@ void Inventory::parse(ifstream &file, HashTable<string, Product>& table, HashTab
 
 		// seprating each data:
         // Seprating data is tricky for this data since it's messy. So I made a function that will seprate it for each case
-		vector<string> sepratedLine = parseCSVFiles(currentLine);
+		ArrayList<string> sepratedLine = parseCSVFiles(currentLine);
 		// Lets get each category out and put the information into each variable
 		// For uniqID
-		string uniqID = sepratedLine[0];
-		product.uniqId = uniqID;
-		// For productname
-		product.productName = sepratedLine[1];
-		// For brandName
-		product.brandName = sepratedLine[2];
-		// For asin
-		product.asin = sepratedLine[3];
-		// For category
-		product.category = sepratedLine[4];
-		// For upcEanCode
-		product.upcEanCode = sepratedLine[5];
-		// For listPrice
-		product.listPrice = sepratedLine[6];
-		// For sellingPrice
-		product.sellingPrice = sepratedLine[7];
-		// For quantity
-		product.quantity = sepratedLine[8];
-		// For modelNumber
-		product.modelNumber = sepratedLine[9];
-		// For aboutProduct
-		product.aboutProduct = sepratedLine[10];
-		// For productSpecification
-		product.productSpecification = sepratedLine[11];
-		// For technicalDetails
-		product.technicalDetails = sepratedLine[12];
-		// For shippingWeight
-		product.shippingWeight = sepratedLine[13];
-		// For productDimensions
-		product.productDimensions = sepratedLine[14];
-		// For image
-		product.image = sepratedLine[15];
-		// For variants
-		product.variants = sepratedLine[16];
-		// For sku
-		product.sku = sepratedLine[17];
-		// For productUrl
-		product.productUrl = sepratedLine[18];		
-		// For stock
-		product.stock = sepratedLine[19];
-		// For productDetails
-		product.productDetails = sepratedLine[20];
-		// For dimensions
-		product.dimensions = sepratedLine[21];
-		// For color
-		product.color = sepratedLine[22];
-		// For ingredients
-		product.ingredients = sepratedLine[23];
-		// For directionToUse
-		product.directionToUse = sepratedLine[24];
-		// For isAmazonSeller
-		product.isAmazonSeller = sepratedLine[25];
-		// For sizeQuantityVariant
-		product.sizeQuantityVariant = sepratedLine[26];
-		// For productDescription
-		product.productDescription = sepratedLine[27];
-
-		// After seprating each information, add it into the table
-		table.insert(uniqID, product);
-		// COMMENT OUT LATER: used it to check if it actually got inserted
-		//find(uniqID, table);
-		
-		// I created a table categoryTable which uses the category as a key. This will be used for listInventory function
-		// Seprate the categories
-		// get the string
-		std::stringstream categoryStream(product.category);
-
-		// seprate them using '|'
-		while(categoryStream.good()){
-			string eachCategory;
-			getline(categoryStream, eachCategory, '|');
-			//Take the space out from the front and back
-			// From the front
-			while(eachCategory[0] == ' '){
-				eachCategory = eachCategory.substr(1);
-			}
-			// From the back
-			while(eachCategory[eachCategory.size()-1] == ' '){
-				eachCategory = eachCategory.substr(0, eachCategory.size() - 1);
-			}
-			// Check if that category already exist
-			vector<Product>* exist = categoryTable.find(eachCategory);
-			if(exist == nullptr){ 
-				// If that category doesn't exist, create a new list with that category
-				vector<Product> newList = { product };
-				// insert the category and the newlist with the product inside the table
-				categoryTable.insert(eachCategory, newList);
-			}else{ //If the category does already exist, add it after the existing stuff
-				exist->push_back(product);
-			}
-			// COMMENT OUT LATER: used it to check if it actually got inserted
-			//listInventory(eachCategory, categoryTable);
+		string* uniqID = sepratedLine.getData(0);
+		// If for some reason uniqID is a nullptr, replace it with an empty string
+		if(uniqID != nullptr){
+			product.uniqId = *uniqID;
+		}else{
+			product.uniqId = "";
 		}
-		
+		if( *uniqID != "Uniq Id"){
+			// For productname
+			product.productName = sepratedLine[1];
+			// For brandName
+			product.brandName = sepratedLine[2];
+			// For asin
+			product.asin = sepratedLine[3];
+			// For category
+			product.category = sepratedLine[4];
+			// For upcEanCode
+			product.upcEanCode = sepratedLine[5];
+			// For listPrice
+			product.listPrice = sepratedLine[6];
+			// For sellingPrice
+			product.sellingPrice = sepratedLine[7];
+			// For quantity
+			product.quantity = sepratedLine[8];
+			// For modelNumber
+			product.modelNumber = sepratedLine[9];
+			// For aboutProduct
+			product.aboutProduct = sepratedLine[10];
+			// For productSpecification
+			product.productSpecification = sepratedLine[11];
+			// For technicalDetails
+			product.technicalDetails = sepratedLine[12];
+			// For shippingWeight
+			product.shippingWeight = sepratedLine[13];
+			// For productDimensions
+			product.productDimensions = sepratedLine[14];
+			// For image
+			product.image = sepratedLine[15];
+			// For variants
+			product.variants = sepratedLine[16];
+			// For sku
+			product.sku = sepratedLine[17];
+			// For productUrl
+			product.productUrl = sepratedLine[18];		
+			// For stock
+			product.stock = sepratedLine[19];
+			// For productDetails
+			product.productDetails = sepratedLine[20];
+			// For dimensions
+			product.dimensions = sepratedLine[21];
+			// For color
+			product.color = sepratedLine[22];
+			// For ingredients
+			product.ingredients = sepratedLine[23];
+			// For directionToUse
+			product.directionToUse = sepratedLine[24];
+			// For isAmazonSeller
+			product.isAmazonSeller = sepratedLine[25];
+			// For sizeQuantityVariant
+			product.sizeQuantityVariant = sepratedLine[26];
+			// For productDescription
+			product.productDescription = sepratedLine[27];
+
+			// After seprating each information, add it into the table
+			table.insert(*uniqID, product);
+			// COMMENT OUT LATER: used it to check if it actually got inserted
+			//find(uniqID, table);
+			
+			// I created a table categoryTable which uses the category as a key. This will be used for listInventory function
+			// Seprate the categories
+			// get the string
+			std::stringstream categoryStream(product.category);
+			string eachCategory;
+			bool empty = false;
+			// seprate them using '|'
+			while(getline(categoryStream, eachCategory, '|')){
+				//Take the space out from the front and back
+				// From the front
+				while(eachCategory[0] == ' '){
+					eachCategory = eachCategory.substr(1);
+				}
+				// From the back
+				while(eachCategory[eachCategory.size()-1] == ' '){
+					eachCategory = eachCategory.substr(0, eachCategory.size() - 1);
+				}
+				// Check if that category already exist
+				ArrayList<Product>* exist = categoryTable.find(eachCategory);
+				if(exist == nullptr){ 
+					// If that category doesn't exist, create a new list with that category
+					ArrayList<Product> newList;
+					newList.add(product);
+					// insert the category and the newlist with the product inside the table
+					categoryTable.insert(eachCategory, newList);
+				}else{ //If the category does already exist, add it after the existing stuff
+					exist->add(product);
+				}
+				// Since we added it, it means the category is not empty
+				empty = true;
+				// COMMENT OUT LATER: used it to check if it actually got inserted
+				// listInventory(eachCategory, categoryTable);
+			}
+			// If the category was empty, it will be inserted into the table as category NA
+			if (!empty) {
+				//Create new table
+				ArrayList<Product>* emptyCategory = categoryTable.find("NA");
+				//Double check if it's empty
+				if (emptyCategory == nullptr) {
+					// Create new arraylist
+					ArrayList<Product> newList;
+					// We are going to add the empty category into this new arraylist
+					newList.add(product);
+					categoryTable.insert("NA", newList);
+				} else {
+					emptyCategory->add(product);
+				}
+			}
+		}
 	}
 }
 
@@ -119,7 +157,7 @@ void Inventory::parse(ifstream &file, HashTable<string, Product>& table, HashTab
     Accepts: 
             string line
     Return: 
-            vector<string> (this includes all 27 categories seprated from that line)
+            ArrayList<string> (this includes all 27 categories seprated from that line)
     Description:
             This parse and seprates the data into each of their categories.
 			There are two types of data here. 
@@ -130,12 +168,12 @@ void Inventory::parse(ifstream &file, HashTable<string, Product>& table, HashTab
 			By using this information, we are going to check if this category has a quote around it or not and seprate
 			them accordingly.
 */ 
-vector<string> Inventory::parseCSVFiles(string line)
+ArrayList<string> Inventory::parseCSVFiles(string line)
 {
 	// Where we are adding each category strings
-	vector<string> sepratedLine;
+	ArrayList<string> sepratedLine;
 	// Where we are constructing the string by adding the character one by one
-	string category;
+	string category = "";
 	// Counts to see how many characters are in there. Mainly used to see if we are at the first letter of the category
 	int charCount = 0;
 	// Checks if the current category is inside a quote
@@ -167,8 +205,8 @@ vector<string> Inventory::parseCSVFiles(string line)
 			}else{ // If the word doesn't start with a quote
 				// Check if the current character is a comma
 				if(line[i] == ','){ // This means that it's the end of that category
-					// Add the category string into the sepratedLine vector
-					sepratedLine.push_back(category); 
+					// Add the category string into the sepratedLine ArrayList
+					sepratedLine.add(category); 
 					//cout << "" << category << endl;
 
 					// Reset the category string so we can add the characters for the next category
@@ -183,9 +221,13 @@ vector<string> Inventory::parseCSVFiles(string line)
 		}
 	}
 	// Push the last catgory
-	sepratedLine.push_back(category);
-
-	// TESTING IF IT WORKS : COMMENT OUT LATER
+	sepratedLine.add(category);
+	
+	// If there are less than 28 category for some reason, fill it by using empty strings
+	while(sepratedLine.getLength() < 28){
+		sepratedLine.add("");
+	}
+	// TESTING IF IT WORKS : COMMENT OUT LATER: I used this to see if the information actually had 28 categories
 	/*
 	if(sepratedLine.size() != 28){
 		if(sepratedLine.size() > 28){
@@ -199,10 +241,22 @@ vector<string> Inventory::parseCSVFiles(string line)
 	}
 	*/
 	
-	// Once we are done seprating data into each category, return the vector with all the seprated category
+	// Once we are done seprating data into each category, return the ArrayList with all the seprated category
 	return sepratedLine;
 }
 
+/* Find Function:
+    Accepts: 
+            string inventoryID, HashTable<string, Product>& table (table is a HashTable with uniqid as the key)
+    Return: 
+            void
+    Description:
+            It will accept the inventoryID that the user inserted and use that to find if there is a product that
+			has the same uniqID as inventoryID by searching the table using .find() function. The .finc() function will
+			return the product that matches the inventoryID but it that id doesn't exist, it will return nullptr. If 
+			it was able to find the product with the inventoryID, it will print all the information about that product.
+			If there isn't any product under that id, it will return "Inventory/Product not found"
+*/ 
 void Inventory::find(string inventoryID, HashTable<string, Product>& table)
 {
 	// Get the value of the inventoryID product
@@ -246,18 +300,33 @@ void Inventory::find(string inventoryID, HashTable<string, Product>& table)
 	}
 }
 
-void Inventory::listInventory(string category, HashTable<string, vector<Product>>& categoryTable){
+/* listInventory Function:
+    Accepts: 
+            string category, HashTable<string, ArrayList<Product>>& categoryTable 
+				(categoryTable has category as a key and ArrayList that has all products under that category)
+    Return: 
+            void
+    Description:
+            It will accept the category that the user inserted and use that to find if there is a product under that category.
+			We are using .findCategory() to get a ArrayList<product> that matches that category. This ArrayList has all the information
+			of products with that category and print the product name and uniqid for those under that category. However, if the 
+			category doesn't exist in the Hashtable, it will return an empty ArrayList which in this case we will print "Invalid 
+			Category"
+			
+*/ 
+void Inventory::listInventory(string category, HashTable<string, ArrayList<Product>>& categoryTable){
 	// Get the table of the product that matches the category
-	vector<Product> products = categoryTable.findCategory(category);
+	ArrayList<Product> products = categoryTable.findCategory(category);
 	// Check if they were actually able to find the product for the inventoryID
 	if(products.empty()){
 		// Not able to find
 		cout << "Invalid Category\n" << endl;
 	}else{
 		// Print all with the finding category
-		for(int i = 0; i < products.size(); i++){
+		for(int i = 0; i < products.getLength(); i++){
 			cout << "uniqId: \t\t" << products[i].uniqId << endl;
-			cout << "productName: \t\t" << products[i].productName << "\n\n"<< endl;
+			cout << "productName: \t\t" << products[i].productName << endl;
 		}
 	}
+	
 }
