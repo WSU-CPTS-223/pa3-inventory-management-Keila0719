@@ -6,7 +6,7 @@ CXXFLAGS = -std=c++11 -Wall
 TARGET = game
 
 # Source files
-SRCS = main.cpp hashTable.hpp inventory.cpp 
+SRCS = main.cpp hashTable.cpp inventory.cpp 
 
 # Build rule
 all: $(TARGET)
